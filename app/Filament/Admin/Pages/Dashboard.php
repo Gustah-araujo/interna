@@ -1,8 +1,8 @@
 <?php
  
-namespace App\Filament\Pages;
+namespace App\Filament\Admin\Pages;
 
-use App\Filament\Widgets\UsersCount;
+use App\Filament\Admin\Widgets\UsersCount;
 
 class Dashboard extends \Filament\Pages\Dashboard
 {

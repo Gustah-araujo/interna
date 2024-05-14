@@ -47,6 +47,7 @@ class EmployeeResource extends Resource
             TextInput::make('salary')
             ->label('Salário')
             ->mask(RawJs::make('$money($input, \',\')'))
+            ->inputMode('decimal')
             ->placeholder('0,00')
             ->stripCharacters([',','.'])
             ->numeric()

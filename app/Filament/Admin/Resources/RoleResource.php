@@ -9,6 +9,8 @@ use App\Models\Role;
 use Filament\Forms;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Tabs;
+use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -35,21 +37,26 @@ class RoleResource extends Resource
 
         $permissions = $permissions->groupBy('scope');
 
-        $permissionsCheckboxes = [];
-
+        $permissionsTabs = [];
+        
         foreach ($permissions as $scope => $scopePermissions) {
-            $permissionsCheckboxes[] = CheckboxList::make("permissions.{$scope}")
-            ->bulkToggleable()
-            ->relationship('permissions')
-            ->options(function () use ($scopePermissions) {
-                $data = [];
 
-                foreach ($scopePermissions as $scopePermission) {
-                    $data[$scopePermission->id] = $scopePermission->description;
-                }
+            $permissionsTabs[] = Tab::make($scope)
+            ->schema([
+                CheckboxList::make("permissions.{$scope}")
+                ->bulkToggleable()
+                ->relationship('permissions')
+                ->hiddenLabel()
+                ->options(function () use ($scopePermissions) {
+                    $data = [];
 
-                return $data;
-            });
+                    foreach ($scopePermissions as $scopePermission) {
+                        $data[$scopePermission->id] = $scopePermission->description;
+                    }
+
+                    return $data;
+                })
+            ]);
         }
 
         return $form
@@ -64,7 +71,10 @@ class RoleResource extends Resource
                 ]),
 
                 Section::make('Permissões')
-                ->schema($permissionsCheckboxes),
+                ->schema([
+                    Tabs::make('permissions')
+                    ->schema($permissionsTabs)
+                ]),
 
             ]
         );
